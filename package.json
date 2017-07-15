@@ -1,18 +1,27 @@
 {
-  "name": "term-ui",
+  "name": "react-if-terminal",
   "version": "0.1.0",
-  "private": true,
-  "devDependencies": {
-    "@storybook/react": "^3.1.8"
-  },
+  "main": "dist/index.js",
+  "description": "React terminal for building IF (interactive fiction) games",
+  "author": "Spencer Dixon",
+  "license": "MIT",
   "dependencies": {
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
     "reflexbox": "^3.0.0-0",
     "styled-components": "^2.1.1"
   },
+  "devDependencies": {
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "@storybook/react": "^3.1.8",
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  },
   "scripts": {
     "start": "start-storybook -p 9000 -c stories",
+    "prepublish": "babel src -d dist",
     "build-storybook": "build-storybook -s public"
   }
 }
