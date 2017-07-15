@@ -7,12 +7,10 @@ import { font } from '../styles';
 import { KEYS } from '../utility';
 
 // TODO: allow users to pass in custom prompt strings
-
 const InputText = styled.input`
   background: none;
   border: none;
   color: ivory;
-  font-weight: bold;
   font-size: ${font.termSize};
   font-family: ${font.family};
   flex: 1;
