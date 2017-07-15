@@ -5,33 +5,14 @@ import Text from './Text.js';
 import HistoryLine from './HistoryLine.js';
 import { Flex, Box, reflex } from 'reflexbox';
 import styled from 'styled-components'
-import { font, colors } from '../styles';
 import { isFunction } from '../utility';
+import DefaultHeader from './DefaultHeader.js';
 
-const Circle = reflex(styled.div`
-  border-radius: 50%;
-  background: ${props => props.color};
-  width: 10px;
-  height: 10px;
-`);
-
-const CircleContainer = styled.div`
-  position: absolute;
-  left: 10px;
-  top: 12px;
-  display: flex;
-`
-
-const Title = styled.div`
-  color: ivory;
-  font-family: ${font.family};
-`
 const ContentContainer = styled.div`
   height: 100%;
   width: 100%;
   overflow-y: scroll;
 `
-
 
 class Terminal extends Component {
   state = {
@@ -41,7 +22,7 @@ class Terminal extends Component {
   static propTypes = {
     width: PropTypes.string,
     height: PropTypes.string,
-    title: PropTypes.string,
+    header: PropTypes.node,
 
     // onPromptChange gets called when user enters new keys.  It should return
     // an object with the signature: { isValid: Bool, autocomplete: Array }
@@ -50,10 +31,9 @@ class Terminal extends Component {
   }
 
   static defaultProps = {
-    // Terminal Visual Customization
     width: '80%',
     height: '80%',
-    title: 'wreck',
+    header: DefaultHeader,
   }
 
   get styles() {
@@ -62,7 +42,6 @@ class Terminal extends Component {
       width: this.props.width,
       background: 'black',
       borderRadius: '3px',
-      border: '1px solid ivory',
       position: 'relative',
     }
   }
@@ -77,13 +56,9 @@ class Terminal extends Component {
     this.scrollToPrompt();
   }
 
-  // getDisplayInfo gets called everytime a new key is pressed.  It returns meta
-  // data about the current command the user is trying to execute.  This
-  getDisplayInfo = value => {
-    return {
-      isValid: true,
-      autocomplete: [],
-    }
+  handlePromptChange = value => {
+    // { isValid: true, autcomplete: [] }
+    return this.props.onPromptChange(value)
   }
 
   focusPrompt = () => {
@@ -97,15 +72,8 @@ class Terminal extends Component {
   render() {
     return (
       <Flex onClick={this.focusPrompt} column style={this.styles}>
-        <Flex my={1} justify="center" align="center">
-          <Title>{this.props.title}</Title>
-        </Flex>
+        {this.props.header()}
 
-        <CircleContainer p={2}>
-          <Circle mr={1} color={colors.close} />
-          <Circle mr={1} color={colors.minimize} />
-          <Circle mr={1} color={colors.expand} />
-        </CircleContainer>
 
         <ContentContainer innerRef={cc => this.contentContainer = cc}>
           {this.state.history.map(({value, result}) => (
@@ -120,7 +88,7 @@ class Terminal extends Component {
 
           <Prompt 
             onSubmit={this.handleSubmit} 
-            onChange={this.getDisplayInfo}
+            onChange={this.handlePromptChange}
             ref={p => this.prompt = p}
           />
         </ContentContainer>

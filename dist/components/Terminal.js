@@ -6,10 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _templateObject = _taggedTemplateLiteral(['\n  border-radius: 50%;\n  background: ', ';\n  width: 10px;\n  height: 10px;\n'], ['\n  border-radius: 50%;\n  background: ', ';\n  width: 10px;\n  height: 10px;\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n  position: absolute;\n  left: 10px;\n  top: 12px;\n  display: flex;\n'], ['\n  position: absolute;\n  left: 10px;\n  top: 12px;\n  display: flex;\n']),
-    _templateObject3 = _taggedTemplateLiteral(['\n  color: ivory;\n  font-family: ', ';\n'], ['\n  color: ivory;\n  font-family: ', ';\n']),
-    _templateObject4 = _taggedTemplateLiteral(['\n  height: 100%;\n  width: 100%;\n  overflow-y: scroll;\n'], ['\n  height: 100%;\n  width: 100%;\n  overflow-y: scroll;\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  height: 100%;\n  width: 100%;\n  overflow-y: scroll;\n'], ['\n  height: 100%;\n  width: 100%;\n  overflow-y: scroll;\n']);
 
 var _react = require('react');
 
@@ -37,9 +34,11 @@ var _styledComponents = require('styled-components');
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _styles = require('../styles');
-
 var _utility = require('../utility');
+
+var _DefaultHeader = require('./DefaultHeader.js');
+
+var _DefaultHeader2 = _interopRequireDefault(_DefaultHeader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53,41 +52,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var Circle = (0, _reflexbox.reflex)(_styledComponents2.default.div(_templateObject, function (props) {
-  return props.color;
-}));
-
-var CircleContainer = _styledComponents2.default.div(_templateObject2);
-
-var Title = _styledComponents2.default.div(_templateObject3, _styles.font.family);
-var ContentContainer = _styledComponents2.default.div(_templateObject4);
-
-function mockSubmit(command) {
-  if (command === 'lift') {
-    return function () {
-      return _react2.default.createElement(
-        _Text2.default,
-        { pl: 4 },
-        'You lift the box up its heavy'
-      );
-    };
-  } else {
-    return function () {
-      return _react2.default.createElement(
-        _Text2.default,
-        { pl: 4 },
-        'unknown'
-      );
-    };
-  }
-}
-
-function mockPromptChange(command) {
-  return {
-    isValid: command === 'lift',
-    autocomplete: []
-  };
-}
+var ContentContainer = _styledComponents2.default.div(_templateObject);
 
 var Terminal = function (_Component) {
   _inherits(Terminal, _Component);
@@ -110,11 +75,9 @@ var Terminal = function (_Component) {
         history: [].concat(_toConsumableArray(_this.state.history), [{ value: value, result: _this.props.onCommandSubmit(value) }])
       });
       _this.scrollToPrompt();
-    }, _this.getDisplayInfo = function (value) {
-      return {
-        isValid: true,
-        autocomplete: []
-      };
+    }, _this.handlePromptChange = function (value) {
+      // { isValid: true, autcomplete: [] }
+      return _this.props.onPromptChange(value);
     }, _this.focusPrompt = function () {
       _this.prompt.focus();
     }, _this.scrollToPrompt = function () {
@@ -130,22 +93,7 @@ var Terminal = function (_Component) {
       return _react2.default.createElement(
         _reflexbox.Flex,
         { onClick: this.focusPrompt, column: true, style: this.styles },
-        _react2.default.createElement(
-          _reflexbox.Flex,
-          { my: 1, justify: 'center', align: 'center' },
-          _react2.default.createElement(
-            Title,
-            null,
-            this.props.title
-          )
-        ),
-        _react2.default.createElement(
-          CircleContainer,
-          { p: 2 },
-          _react2.default.createElement(Circle, { mr: 1, color: _styles.colors.close }),
-          _react2.default.createElement(Circle, { mr: 1, color: _styles.colors.minimize }),
-          _react2.default.createElement(Circle, { mr: 1, color: _styles.colors.expand })
-        ),
+        this.props.header(),
         _react2.default.createElement(
           ContentContainer,
           { innerRef: function innerRef(cc) {
@@ -171,7 +119,7 @@ var Terminal = function (_Component) {
           }),
           _react2.default.createElement(_Prompt2.default, {
             onSubmit: this.handleSubmit,
-            onChange: this.getDisplayInfo,
+            onChange: this.handlePromptChange,
             ref: function ref(p) {
               return _this2.prompt = p;
             }
@@ -187,14 +135,9 @@ var Terminal = function (_Component) {
         width: this.props.width,
         background: 'black',
         borderRadius: '3px',
-        border: '1px solid ivory',
         position: 'relative'
       };
     }
-
-    // getDisplayInfo gets called everytime a new key is pressed.  It returns meta
-    // data about the current command the user is trying to execute.  This
-
   }]);
 
   return Terminal;
@@ -203,7 +146,7 @@ var Terminal = function (_Component) {
 Terminal.propTypes = {
   width: _propTypes2.default.string,
   height: _propTypes2.default.string,
-  title: _propTypes2.default.string,
+  header: _propTypes2.default.node,
 
   // onPromptChange gets called when user enters new keys.  It should return
   // an object with the signature: { isValid: Bool, autocomplete: Array }
@@ -211,13 +154,8 @@ Terminal.propTypes = {
   onCommandSubmit: _propTypes2.default.func
 };
 Terminal.defaultProps = {
-  // Terminal Visual Customization
   width: '80%',
   height: '80%',
-  title: 'wreck',
-
-  // Callbacks
-  onCommandSubmit: mockSubmit,
-  onPromptChange: mockPromptChange
+  header: _DefaultHeader2.default
 };
 exports.default = Terminal;

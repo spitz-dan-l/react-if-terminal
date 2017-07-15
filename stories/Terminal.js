@@ -1,15 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Terminal } from '../src';
-import styled from 'styled-components'
-
-const Container = styled.div`
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
+import { Text } from '../src/components/Text.js';
 
 function mockSubmit(command) {
   if (command === 'lift') {
@@ -32,10 +24,18 @@ function mockPromptChange(command) {
 
 storiesOf('Basic Terminal', module)
   .add('Default', () => (
-    <Container>
-      <Terminal 
-        onCommandSubmit={mockSubmit}
-        onPromptChange={mockPromptChange}
-      />
-    </Container>
+    <Terminal 
+      onCommandSubmit={mockSubmit}
+      onPromptChange={mockPromptChange}
+    />
+  ))
+  // TODO: add theme object as argument to the header
+  .add('Custom Header', () => (
+    <Terminal 
+      onCommandSubmit={mockSubmit}
+      onPromptChange={mockPromptChange}
+      header={(theme) => (
+        <p style={{color: 'white'}}>Custom Header!</p>
+      )}
+    />
   ))
