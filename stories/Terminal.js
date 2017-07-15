@@ -11,9 +11,31 @@ const Container = styled.div`
   align-items: center;
 `
 
+function mockSubmit(command) {
+  if (command === 'lift') {
+    return () => (
+      <Text pl={4}>
+        You lift the box up its heavy
+      </Text>
+    );
+  } else {
+    return () => <Text pl={4}>unknown</Text>
+  }
+}
+
+function mockPromptChange(command) {
+  return {
+    isValid: command === 'lift',
+    autocomplete: []
+  }
+}
+
 storiesOf('Basic Terminal', module)
   .add('Default', () => (
     <Container>
-      <Terminal />
+      <Terminal 
+        onCommandSubmit={mockSubmit}
+        onPromptChange={mockPromptChange}
+      />
     </Container>
   ))

@@ -32,24 +32,6 @@ const ContentContainer = styled.div`
   overflow-y: scroll;
 `
 
-function mockSubmit(command) {
-  if (command === 'lift') {
-    return () => (
-      <Text pl={4}>
-        You lift the box up its heavy
-      </Text>
-    );
-  } else {
-    return () => <Text pl={4}>unknown</Text>
-  }
-}
-
-function mockPromptChange(command) {
-  return {
-    isValid: command === 'lift',
-    autocomplete: []
-  }
-}
 
 class Terminal extends Component {
   state = {
@@ -72,10 +54,6 @@ class Terminal extends Component {
     width: '80%',
     height: '80%',
     title: 'wreck',
-
-    // Callbacks
-    onCommandSubmit: mockSubmit,
-    onPromptChange: mockPromptChange,
   }
 
   get styles() {
