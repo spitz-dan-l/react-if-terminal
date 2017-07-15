@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Terminal } from '../src';
-import { Text } from '../src/components/Text.js';
+import Text from '../src/components/Text.js';
 
 function mockSubmit(command) {
   if (command === 'lift') {
@@ -37,5 +37,21 @@ storiesOf('Basic Terminal', module)
       header={(theme) => (
         <p style={{color: 'white'}}>Custom Header!</p>
       )}
+    />
+  ))
+  .add('Custom Theme', () => (
+    <Terminal
+      onCommandSubmit={mockSubmit}
+      onPromptChange={mockPromptChange}
+      theme={{
+        term: {
+          fontFamily: 'cursive',
+          fontColor: 'black',
+          background: 'white',
+        },
+        prompt: {
+          pwd: '$  ~',
+        }
+      }}
     />
   ))

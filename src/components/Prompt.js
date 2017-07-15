@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { Flex, Box } from 'reflexbox';
 import styled from 'styled-components'
 import Pwd from './Pwd.js';
-import { font } from '../styles';
+import { term, prompt } from '../styles';
 import { KEYS } from '../utility';
 
 // TODO: allow users to pass in custom prompt strings
 const InputText = styled.input`
   background: none;
   border: none;
-  color: ivory;
-  font-size: ${font.termSize};
-  font-family: ${font.family};
+  color: ${term('fontColor')};
+  font-size: ${term('fontSize')};
+  font-family: ${term('fontFamily')};
   flex: 1;
   &:focus { outline: none; }
 `

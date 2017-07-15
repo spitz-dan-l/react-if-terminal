@@ -1,7 +1,7 @@
 import React from 'react';
 import { reflex, Flex, Box } from 'reflexbox';
 import styled from 'styled-components'
-import { font, colors } from '../styles';
+import { term, colors } from '../styles';
 
 const Circle = reflex(styled.div`
   border-radius: 50%;
@@ -19,7 +19,7 @@ const CircleContainer = styled.div`
 
 const Title = styled.div`
   color: ivory;
-  font-family: ${font.family};
+  font-family: ${term('fontFamily')};
 `
 
 export default () => (

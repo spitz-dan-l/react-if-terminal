@@ -1,11 +1,16 @@
 import React from 'react';
 import { reflex } from 'reflexbox';
-import styled from 'styled-components'
-import { font } from '../styles';
+import styled, {withTheme} from 'styled-components'
+import { term, prompt } from '../styles';
 
 const Pwd = reflex(styled.div`
-  color: ivory;
-  font-family: ${font.family}
+  color: ${term('fontColor')};
+  font-family: ${term('fontFamily')}
+  font-size: ${term('fontSize')}
 `);
 
-export default (props) => <Pwd {...props}>> </Pwd>;
+export default withTheme((props) => (
+  <Pwd {...props}>
+    {props.theme.prompt.pwd}
+  </Pwd>
+));

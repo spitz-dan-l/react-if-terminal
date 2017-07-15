@@ -1,17 +1,31 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Flex, Box, reflex } from 'reflexbox';
+import styled, { ThemeProvider } from 'styled-components'
+
+// Internal
 import Prompt from './Prompt.js';
 import Text from './Text.js';
 import HistoryLine from './HistoryLine.js';
-import { Flex, Box, reflex } from 'reflexbox';
-import styled from 'styled-components'
 import { isFunction } from '../utility';
+import { term, fullyExpanded } from '../styles';
+
+// Defaults
 import DefaultHeader from './DefaultHeader.js';
+import defaultTheme, {themeShape} from '../styles/theme.js';
 
 const ContentContainer = styled.div`
-  height: 100%;
-  width: 100%;
+  ${fullyExpanded} 
   overflow-y: scroll;
+`
+
+const TerminalContainer = styled.div`
+  ${fullyExpanded} 
+  background: ${term('background')};
+  border-radius: ${term('radius')};
+  position: relative;
+  display: flex;
+  flex-direction: column;
 `
 
 class Terminal extends Component {
@@ -20,9 +34,11 @@ class Terminal extends Component {
   }
 
   static propTypes = {
-    width: PropTypes.string,
-    height: PropTypes.string,
-    header: PropTypes.node,
+    // Override the Terminal Header
+    header: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+
+    // Override for the theme used
+    theme: themeShape,
 
     // onPromptChange gets called when user enters new keys.  It should return
     // an object with the signature: { isValid: Bool, autocomplete: Array }
@@ -31,34 +47,15 @@ class Terminal extends Component {
   }
 
   static defaultProps = {
-    width: '80%',
-    height: '80%',
     header: DefaultHeader,
   }
 
-  get styles() {
-    return {
-      height: this.props.height,
-      width: this.props.width,
-      background: 'black',
-      borderRadius: '3px',
-      position: 'relative',
-    }
-  }
-
   handleSubmit = value => {
+    const result = this.props.onCommandSubmit(value);
     this.setState({
-      history: [
-        ...this.state.history, 
-        { value, result: this.props.onCommandSubmit(value) },
-      ]
+      history: [ ...this.state.history, { value, result } ]
     });
     this.scrollToPrompt();
-  }
-
-  handlePromptChange = value => {
-    // { isValid: true, autcomplete: [] }
-    return this.props.onPromptChange(value)
   }
 
   focusPrompt = () => {
@@ -70,29 +67,33 @@ class Terminal extends Component {
   }
 
   render() {
+    const { theme, header, onPromptChange } = this.props;
+    const finalTheme = theme ? {...defaultTheme, ...theme} : defaultTheme;
+
     return (
-      <Flex onClick={this.focusPrompt} column style={this.styles}>
-        {this.props.header()}
+      <ThemeProvider theme={finalTheme}>
+        <TerminalContainer onClick={this.focusPrompt}>
+          {isFunction(header) ? header() : header}
 
+          <ContentContainer innerRef={cc => this.contentContainer = cc}>
+            {this.state.history.map(({value, result}, i) => (
+              <div key={value + i}>
+                <HistoryLine>{value}</HistoryLine>
+                {isFunction(result) 
+                    ? result() 
+                    : <Text pl={2}>{result}</Text>
+                }
+              </div>
+            ))}
 
-        <ContentContainer innerRef={cc => this.contentContainer = cc}>
-          {this.state.history.map(({value, result}) => (
-            <div>
-              <HistoryLine>{value}</HistoryLine>
-              {isFunction(result) 
-                  ? result() 
-                  : <Text pl={2}>{result}</Text>
-              }
-            </div>
-          ))}
-
-          <Prompt 
-            onSubmit={this.handleSubmit} 
-            onChange={this.handlePromptChange}
-            ref={p => this.prompt = p}
-          />
-        </ContentContainer>
-      </Flex>
+            <Prompt 
+              onSubmit={this.handleSubmit} 
+              onChange={onPromptChange}
+              ref={p => this.prompt = p}
+            />
+          </ContentContainer>
+        </TerminalContainer>
+      </ThemeProvider>
     );
   }
 }
