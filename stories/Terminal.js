@@ -2,6 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Terminal } from '../src';
 import Text from '../src/components/Text.js';
+import { Flex, Box } from 'reflexbox';
 
 function mockSubmit(command) {
   if (command === 'lift') {
@@ -29,14 +30,24 @@ storiesOf('Basic Terminal', module)
       onPromptChange={mockPromptChange}
     />
   ))
-  // TODO: add theme object as argument to the header
-  .add('Custom Header', () => (
+  .add('Custom Header Function', () => (
     <Terminal 
       onCommandSubmit={mockSubmit}
       onPromptChange={mockPromptChange}
-      header={(theme) => (
-        <p style={{color: 'white'}}>Custom Header!</p>
+      headerRenderer={(theme) => (
+        <p style={{textAlign: 'center', color: 'white', fontFamily: theme.term.fontFamily}}>Custom Header!</p>
       )}
+    />
+  ))
+  .add('Custom Header Comp', () => (
+    <Terminal 
+      onCommandSubmit={mockSubmit}
+      onPromptChange={mockPromptChange}
+      headerRenderer={
+        <Flex justify="center" align="center">
+          <span style={{color: 'white'}}>My Awesome Game!</span>
+        </Flex>
+      }
     />
   ))
   .add('Custom Theme', () => (

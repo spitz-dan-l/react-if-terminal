@@ -6,7 +6,6 @@ import Pwd from './Pwd.js';
 import { term, prompt } from '../styles';
 import { KEYS } from '../utility';
 
-// TODO: allow users to pass in custom prompt strings
 const InputText = styled.input`
   background: none;
   border: none;

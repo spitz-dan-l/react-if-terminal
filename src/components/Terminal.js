@@ -35,7 +35,7 @@ class Terminal extends Component {
 
   static propTypes = {
     // Override the Terminal Header
-    header: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+    headerRenderer: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
 
     // Override for the theme used
     theme: themeShape,
@@ -47,7 +47,11 @@ class Terminal extends Component {
   }
 
   static defaultProps = {
-    header: DefaultHeader,
+    headerRenderer: DefaultHeader,
+  }
+
+  componentDidMount() {
+    this.focusPrompt();
   }
 
   handleSubmit = value => {
@@ -67,13 +71,13 @@ class Terminal extends Component {
   }
 
   render() {
-    const { theme, header, onPromptChange } = this.props;
+    const { theme, headerRenderer, onPromptChange } = this.props;
     const finalTheme = theme ? {...defaultTheme, ...theme} : defaultTheme;
 
     return (
       <ThemeProvider theme={finalTheme}>
         <TerminalContainer onClick={this.focusPrompt}>
-          {isFunction(header) ? header() : header}
+          {isFunction(headerRenderer) ? headerRenderer(finalTheme) : headerRenderer}
 
           <ContentContainer innerRef={cc => this.contentContainer = cc}>
             {this.state.history.map(({value, result}, i) => (
