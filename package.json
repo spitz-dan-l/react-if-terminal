@@ -23,6 +23,10 @@
     "start": "start-storybook -p 9000 -c stories",
     "build": "babel src -d dist",
     "prepublish": "npm run build",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -c stories -o public",
+    "docs": "npm run build-storybook && netlify deploy ./public"
+  },
+  "bugs": {
+    "url": "https://github.com/spencercdixon/react-if-term/issues"
   }
 }

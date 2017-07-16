@@ -16,7 +16,7 @@ export const fullyExpanded = css`
   width: 100%;
 `
 
-// HOF that returns a HOF making it easier to access theme variables
+// HOF that returns a HOF making it easier to access theme sections
 function shortCutFor(attr) {
   return value => {
     return props => {
