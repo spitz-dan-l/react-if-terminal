@@ -4,9 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _templateObject = _taggedTemplateLiteral(['\n  height: 100%;\n  width: 100%;\n  overflow-y: scroll;\n'], ['\n  height: 100%;\n  width: 100%;\n  overflow-y: scroll;\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  ', ' \n  overflow-y: scroll;\n'], ['\n  ', ' \n  overflow-y: scroll;\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n  ', ' \n  background: ', ';\n  border-radius: ', ';\n  position: relative;\n  display: flex;\n  flex-direction: column;\n'], ['\n  ', ' \n  background: ', ';\n  border-radius: ', ';\n  position: relative;\n  display: flex;\n  flex-direction: column;\n']);
 
 var _react = require('react');
 
@@ -15,6 +18,12 @@ var _react2 = _interopRequireDefault(_react);
 var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reflexbox = require('reflexbox');
+
+var _styledComponents = require('styled-components');
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
 var _Prompt = require('./Prompt.js');
 
@@ -28,19 +37,21 @@ var _HistoryLine = require('./HistoryLine.js');
 
 var _HistoryLine2 = _interopRequireDefault(_HistoryLine);
 
-var _reflexbox = require('reflexbox');
-
-var _styledComponents = require('styled-components');
-
-var _styledComponents2 = _interopRequireDefault(_styledComponents);
-
 var _utility = require('../utility');
+
+var _styles = require('../styles');
 
 var _DefaultHeader = require('./DefaultHeader.js');
 
 var _DefaultHeader2 = _interopRequireDefault(_DefaultHeader);
 
+var _theme = require('../styles/theme.js');
+
+var _theme2 = _interopRequireDefault(_theme);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -52,7 +63,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var ContentContainer = _styledComponents2.default.div(_templateObject);
+// Internal
+
+
+// Defaults
+
+
+var ContentContainer = _styledComponents2.default.div(_templateObject, _styles.fullyExpanded);
+
+var TerminalContainer = _styledComponents2.default.div(_templateObject2, _styles.fullyExpanded, (0, _styles.term)('background'), (0, _styles.term)('radius'));
 
 var Terminal = function (_Component) {
   _inherits(Terminal, _Component);
@@ -70,14 +89,12 @@ var Terminal = function (_Component) {
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Terminal.__proto__ || Object.getPrototypeOf(Terminal)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       history: []
-    }, _this.handleSubmit = function (value) {
+    }, _this.handleSubmit = function (input) {
+      var output = _this.props.onCommandSubmit(input);
       _this.setState({
-        history: [].concat(_toConsumableArray(_this.state.history), [{ value: value, result: _this.props.onCommandSubmit(value) }])
+        history: [].concat(_toConsumableArray(_this.state.history), [{ input: input, output: output }])
       });
       _this.scrollToPrompt();
-    }, _this.handlePromptChange = function (value) {
-      // { isValid: true, autcomplete: [] }
-      return _this.props.onPromptChange(value);
     }, _this.focusPrompt = function () {
       _this.prompt.focus();
     }, _this.scrollToPrompt = function () {
@@ -86,57 +103,65 @@ var Terminal = function (_Component) {
   }
 
   _createClass(Terminal, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.focusPrompt();
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
+      var _props = this.props,
+          theme = _props.theme,
+          headerRenderer = _props.headerRenderer,
+          onPromptChange = _props.onPromptChange,
+          className = _props.className,
+          contentClassName = _props.contentClassName,
+          rest = _objectWithoutProperties(_props, ['theme', 'headerRenderer', 'onPromptChange', 'className', 'contentClassName']);
+
+      var finalTheme = theme ? _extends({}, _theme2.default, theme) : _theme2.default;
+
       return _react2.default.createElement(
-        _reflexbox.Flex,
-        { onClick: this.focusPrompt, column: true, style: this.styles },
-        this.props.header(),
+        _styledComponents.ThemeProvider,
+        { theme: finalTheme },
         _react2.default.createElement(
-          ContentContainer,
-          { innerRef: function innerRef(cc) {
-              return _this2.contentContainer = cc;
-            } },
-          this.state.history.map(function (_ref2) {
-            var value = _ref2.value,
-                result = _ref2.result;
-            return _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                _HistoryLine2.default,
-                null,
-                value
-              ),
-              (0, _utility.isFunction)(result) ? result() : _react2.default.createElement(
-                _Text2.default,
-                { pl: 2 },
-                result
-              )
-            );
-          }),
-          _react2.default.createElement(_Prompt2.default, {
-            onSubmit: this.handleSubmit,
-            onChange: this.handlePromptChange,
-            ref: function ref(p) {
-              return _this2.prompt = p;
-            }
-          })
+          TerminalContainer,
+          { onClick: this.focusPrompt, className: className },
+          (0, _utility.isFunction)(headerRenderer) ? headerRenderer(finalTheme) : headerRenderer,
+          _react2.default.createElement(
+            ContentContainer,
+            { className: contentClassName, innerRef: function innerRef(cc) {
+                return _this2.contentContainer = cc;
+              } },
+            this.state.history.map(function (_ref2, i) {
+              var input = _ref2.input,
+                  output = _ref2.output;
+              return _react2.default.createElement(
+                'div',
+                { key: input + i },
+                _react2.default.createElement(
+                  _HistoryLine2.default,
+                  null,
+                  input
+                ),
+                (0, _utility.isFunction)(output) ? output() : _react2.default.createElement(
+                  _Text2.default,
+                  { pl: 2 },
+                  output
+                )
+              );
+            }),
+            _react2.default.createElement(_Prompt2.default, {
+              onSubmit: this.handleSubmit,
+              onChange: onPromptChange,
+              ref: function ref(p) {
+                return _this2.prompt = p;
+              }
+            })
+          )
         )
       );
-    }
-  }, {
-    key: 'styles',
-    get: function get() {
-      return {
-        height: this.props.height,
-        width: this.props.width,
-        background: 'black',
-        borderRadius: '3px',
-        position: 'relative'
-      };
     }
   }]);
 
@@ -144,9 +169,11 @@ var Terminal = function (_Component) {
 }(_react.Component);
 
 Terminal.propTypes = {
-  width: _propTypes2.default.string,
-  height: _propTypes2.default.string,
-  header: _propTypes2.default.node,
+  // Override the Terminal Header
+  headerRenderer: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.node]),
+
+  // Override for the theme used
+  theme: _theme.themeShape,
 
   // onPromptChange gets called when user enters new keys.  It should return
   // an object with the signature: { isValid: Bool, autocomplete: Array }
@@ -154,8 +181,6 @@ Terminal.propTypes = {
   onCommandSubmit: _propTypes2.default.func
 };
 Terminal.defaultProps = {
-  width: '80%',
-  height: '80%',
-  header: _DefaultHeader2.default
+  headerRenderer: _DefaultHeader2.default
 };
 exports.default = Terminal;

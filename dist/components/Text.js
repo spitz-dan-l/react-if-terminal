@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _templateObject = _taggedTemplateLiteral(['\n  font-family: ', ';\n  color: ivory;\n  margin: 0;\n  font-size: ', ';\n'], ['\n  font-family: ', ';\n  color: ivory;\n  margin: 0;\n  font-size: ', ';\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  font-family: ', ';\n  font-size: ', ';\n  color: ', ';\n  margin: 0;\n'], ['\n  font-family: ', ';\n  font-size: ', ';\n  color: ', ';\n  margin: 0;\n']);
 
 var _react = require('react');
 
@@ -22,6 +22,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var Text = (0, _reflexbox.reflex)(_styledComponents2.default.p(_templateObject, _styles.font.family, _styles.font.termSize));
+var Text = (0, _reflexbox.reflex)(_styledComponents2.default.p(_templateObject, (0, _styles.term)('fontFamily'), (0, _styles.term)('fontSize'), (0, _styles.term)('fontColor')));
 
 exports.default = Text;

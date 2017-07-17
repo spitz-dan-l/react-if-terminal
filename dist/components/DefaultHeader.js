@@ -30,7 +30,7 @@ var Circle = (0, _reflexbox.reflex)(_styledComponents2.default.div(_templateObje
 
 var CircleContainer = _styledComponents2.default.div(_templateObject2);
 
-var Title = _styledComponents2.default.div(_templateObject3, _styles.font.family);
+var Title = _styledComponents2.default.div(_templateObject3, (0, _styles.term)('fontFamily'));
 
 exports.default = function () {
   return _react2.default.createElement(

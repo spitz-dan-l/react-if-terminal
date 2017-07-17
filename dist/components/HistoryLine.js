@@ -28,8 +28,6 @@ var _Text2 = _interopRequireDefault(_Text);
 
 var _utility = require('../utility');
 
-var _styles = require('../styles');
-
 var _reflexbox = require('reflexbox');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
