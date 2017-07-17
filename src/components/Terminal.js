@@ -54,10 +54,10 @@ class Terminal extends Component {
     this.focusPrompt();
   }
 
-  handleSubmit = value => {
-    const result = this.props.onCommandSubmit(value);
+  handleSubmit = input => {
+    const output = this.props.onCommandSubmit(input);
     this.setState({
-      history: [ ...this.state.history, { value, result } ]
+      history: [ ...this.state.history, { input, output } ]
     });
     this.scrollToPrompt();
   }
@@ -71,21 +71,21 @@ class Terminal extends Component {
   }
 
   render() {
-    const { theme, headerRenderer, onPromptChange } = this.props;
+    const { theme, headerRenderer, onPromptChange, className, contentClassName, ...rest } = this.props;
     const finalTheme = theme ? {...defaultTheme, ...theme} : defaultTheme;
 
     return (
       <ThemeProvider theme={finalTheme}>
-        <TerminalContainer onClick={this.focusPrompt}>
+        <TerminalContainer onClick={this.focusPrompt} className={className}>
           {isFunction(headerRenderer) ? headerRenderer(finalTheme) : headerRenderer}
 
-          <ContentContainer innerRef={cc => this.contentContainer = cc}>
-            {this.state.history.map(({value, result}, i) => (
-              <div key={value + i}>
-                <HistoryLine>{value}</HistoryLine>
-                {isFunction(result) 
-                    ? result() 
-                    : <Text pl={2}>{result}</Text>
+          <ContentContainer className={contentClassName} innerRef={cc => this.contentContainer = cc}>
+            {this.state.history.map(({input, output}, i) => (
+              <div key={input + i}>
+                <HistoryLine>{input}</HistoryLine>
+                {isFunction(output) 
+                    ? output() 
+                    : <Text pl={2}>{output}</Text>
                 }
               </div>
             ))}
