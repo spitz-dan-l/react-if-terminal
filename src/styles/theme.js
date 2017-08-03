@@ -6,7 +6,7 @@ const defaultTheme = {
     fontFamily: font.family,
     fontSize: '1em',
     fontColor: 'ivory',
-    background: 'black',
+    background: 'white',
     radius: 3,
   },
   prompt: {

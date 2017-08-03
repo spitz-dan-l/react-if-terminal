@@ -6,6 +6,7 @@
   "author": "Spencer Dixon",
   "license": "MIT",
   "dependencies": {
+    "react-autocompletely": "^1.0.0-beta.5",
     "reflexbox": "^3.0.0-0",
     "styled-components": "^2.1.1"
   },
