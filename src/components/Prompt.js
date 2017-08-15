@@ -44,15 +44,15 @@ const Input = styled.input`
   position: absolute;
   left: -16px;
   top: 0;
-  width: 20px;
-  height: 16px;
+  width: 0px;
+  height: 0px;
   background: transparent;
   border: none
   color: transparent;
   outline: none;
   padding: 0;
   resize: none;
-  z-index: 0;
+  z-index: -1;
   overflow: hidden;
 `
 
@@ -75,7 +75,11 @@ const InputDisplay = styled.div`
   margin-bottom: -2px;
 `
 class Prompt extends Component {
-  state = { currentLine: '', value: '', meta: {} } //meta is an object with isValid bool, and autocomplete array
+  state = { currentLine: '', value: '', meta: {} }; //meta is an object with isValid bool, and autocomplete array
+
+  static defaultProps = {
+    renderInputText: (value) => value
+  }
 
   handleSubmit = value => {
     // could argue isValid check is not necessary
@@ -91,6 +95,7 @@ class Prompt extends Component {
       this.props.onSubmit(this.state.value);
       this.setState({value: ''});
     }
+    this.setCursor(this.input, this.input.value.length);
   }
 
   handleChange = (value) => {
@@ -102,43 +107,42 @@ class Prompt extends Component {
     this.input.focus();
   }
 
+  setCursor = (node,pos) => {
+      node = (typeof node == "string" || node instanceof String) ? document.getElementById(node) : node;
+
+      if(!node){
+          return false;
+      }else if(node.createTextRange){
+          var textRange = node.createTextRange();
+          textRange.collapse(true);
+          textRange.moveEnd(pos);
+          textRange.moveStart(pos);
+          textRange.select();
+          return true;
+      }else if(node.setSelectionRange){
+          node.setSelectionRange(pos,pos);
+          return true;
+      }
+
+      return false;
+  }
+
+  renderInputText = (value) => {
+    if (this.props.renderInputText !== undefined) {
+      return this.props.renderInputText(value);  
+    }
+    return value;
+  }
+
   render() {
     const items = ['horse', 'apples', 'horseapples', 'appleapplehorses'];
     return (
       <Flex>
         <Pwd mx={1} />
-        <Autocomplete onChange={this.handleSubmit}>
-          {({
-            getInputProps,
-            getItemProps,
-            isOpen,
-            value,
-            selectedItem,
-            highlightedIndex,
-          }) =>
-            (<div>
-              <InputWrapper onClick={() => this.focus()}>
-                <Input {...getInputProps({onChange:this.handleChange, onKeyDown: this.handleKeys})} innerRef={i => this.input = i} />
-                <InputDisplay>{this.state.currentLine} {value}CURSOR</InputDisplay>
-              </InputWrapper>
-              {isOpen &&
-                <div style={{border: '1px solid rgba(34,36,38,.15)'}}>
-                  {items.map((item, index) => (
-                    <Item
-                      key={item}
-                      {...getItemProps({
-                        value: item,
-                        index,
-                        isActive: highlightedIndex === index,
-                        isSelected: selectedItem === item,
-                      })}
-                    >
-                      {item}
-                    </Item>
-                  ))}
-                </div>}
-            </div>)}
-        </Autocomplete>
+        <InputWrapper onClick={() => this.focus()}>
+          <Input onChange={this.handleChange} onKeyDown={this.handleKeys} value={this.state.value} innerRef={i => this.input = i} />
+          <InputDisplay>{this.state.currentLine} {this.renderInputText(this.state.value)}[]</InputDisplay>
+        </InputWrapper>
       </Flex>
     );
   }
