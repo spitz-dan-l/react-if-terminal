@@ -8,24 +8,24 @@ import { KEYS } from '../utility';
 import Autocomplete from 'react-autocompletely'
 
 
-const Item = styled.div`
-    cursor: pointer;
-    display: block;
-    border: none;
-    height: auto;
-    text-align: left;
-    border-top: none;
-    line-height: 1em;
-    color: rgba(0,0,0,.87);
-    font-size: 1rem;
-    text-transform: none;
-    font-weight: 400;
-    box-shadow: none;
-    padding: .8rem 1.1rem;
-    box-sizing: border-box;
-    white-space: normal;
-    word-wrap: normal;
-`
+// const Item = styled.div`
+//     cursor: pointer;
+//     display: block;
+//     border: none;
+//     height: auto;
+//     text-align: left;
+//     border-top: none;
+//     line-height: 1em;
+//     color: rgba(0,0,0,.87);
+//     font-size: 1rem;
+//     text-transform: none;
+//     font-weight: 400;
+//     box-shadow: none;
+//     padding: .8rem 1.1rem;
+//     box-sizing: border-box;
+//     white-space: normal;
+//     word-wrap: normal;
+// `
 //   ({isActive, isSelected}) => ({
 //     backgroundColor: isActive ? 'lightgrey' : 'white',
 //     fontWeight: isSelected ? 'bold' : 'normal',
@@ -36,27 +36,46 @@ const Item = styled.div`
 //   })
 // )
 
-const InputWrapper = styled.div`
-  position: relative;
-`
+const wrapper_styles = {
+  position: 'relative'
+};
 
-const Input = styled.input`
-  position: absolute;
-  left: -16px;
-  top: 0;
-  width: 0px;
-  height: 0px;
-  background: transparent;
-  border: none
-  color: transparent;
-  outline: none;
-  padding: 0;
-  resize: none;
-  z-index: -1;
-  overflow: hidden;
-`
+const input_styles = {
+  position: 'absolute',
+  left: '-16px',
+  top: 0,
+  width: 0,
+  height: 0,
+  background: 'transparent',
+  border: 'none',
+  color: 'transparent',
+  outline: 'none',
+  padding: 0,
+  resize: 'none',
+  zIndex: -1,
+  overflow: 'hidden'
+}
 
-const InputDisplay = styled.div`
+const input_display_styles = {
+  fontSize: 14,
+  worWrap: 'break-word',
+  lineHeight: '1em',
+  outline: 0,
+  whiteSpace: 'normal',
+  minHeight: '2em',
+  minWidth: '10em',
+  background: '#fff',
+  display: 'inline-block',
+  padding: '.5em 2em .5em 1em',
+  color: 'rgba(0,0,0,.87)',
+  boxShadow: 'none',
+  border: '1px solid rgba(34,36,38,.15)',
+  transition: 'box-shadow .1s ease,width .1s ease',
+  margin: 0,
+  marginBottom: '-2px'
+}
+
+const InputDisplay = styled.span`
   fontSize: 14;
   word-wrap break-word;
   line-height: 1em;
@@ -98,7 +117,8 @@ class Prompt extends Component {
     this.setCursor(this.input, this.input.value.length);
   }
 
-  handleChange = (value) => {
+  handleChange = () => {
+    const value = this.input.value;
     const meta = this.props.onChange(value)
     this.setState({value: value, meta});
   }
@@ -136,13 +156,14 @@ class Prompt extends Component {
 
   render() {
     const items = ['horse', 'apples', 'horseapples', 'appleapplehorses'];
+    console.log(this.state.value);
     return (
       <Flex>
         <Pwd mx={1} />
-        <InputWrapper onClick={() => this.focus()}>
-          <Input onChange={this.handleChange} onKeyDown={this.handleKeys} value={this.state.value} innerRef={i => this.input = i} />
-          <InputDisplay>{this.state.currentLine} {this.renderInputText(this.state.value)}[]</InputDisplay>
-        </InputWrapper>
+        <div onClick={() => this.focus()} style={wrapper_styles}>
+          <input style={input_styles} onChange={this.handleChange} onKeyDown={this.handleKeys} value={this.state.value} ref={i => this.input = i} />
+          <div style={input_display_styles}>{this.props.renderInputText(this.state.value)}[]</div>
+        </div>
       </Flex>
     );
   }
